@@ -1,0 +1,107 @@
+#:kivy 1.9.2
+#ScreenManager define
+ScreenManager:
+    id: screen_manager
+    #Login Screen Details
+    Kivy_Test_Login:
+        id: Login_Screen
+        name: 'Login'
+        manager: 'screen_manager'
+    #Login Screen Details
+    Kivy_Test_Main:
+        id: Main_Screen
+        name: 'Main'
+        manager: 'screen_manager'
+
+#Login_Screen
+<Kivy_Test_Login>:
+    name:"Login_Screen"
+    userName_Input: userName
+    passWord_Input: passWord
+
+#Main Box Layout
+    BoxLayout:
+        orientation:"vertical"
+        padding: 10
+        spacing: 10
+        height: 30
+#BoxLayout for Logo
+        BoxLayout:
+
+            Label:
+                id: "TopLabel"
+                text: "Label"
+#Boxlayout to define login and input
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint: 0.8,0.15
+            Label:
+                font_size: 15
+                text: ""
+            Label:
+                font_size: 15
+                text: "Username"
+            TextInput:
+                id: userName
+                width:120
+                font_size:15
+                multiline: False
+            Label:
+                font_size: 15
+                text: ""
+#BoxLayout for password and input
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: 0.8,0.15
+            Label:
+                font_size: 15
+                text: ""
+            Label:
+                font_size: 15
+                text: "Password"
+            TextInput:
+                id: passWord
+                password: True
+                width: 80
+                font_size:15
+                multiline: False
+            Label:
+                font_size: 15
+                text: ""
+#BoxLayout for Login Button
+        BoxLayout:
+            size_hint: 0.6,0.1
+            Label:
+                font_size: 15
+                text: ""
+            Button:
+                text: "Login"
+                on_press: root.doLogin()
+            Label:
+                font_size: 15
+                text: ""
+#BoxLayout for Login Error Message
+        BoxLayout:
+            Label:
+                id: BottomLabel
+                text: "BottomLabel"
+
+
+#Main_Screen
+<Kivy_Test_Main>:
+    name:"Main_Screen"
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint:1,0.1
+            Button:
+                text: "User"
+            Button:
+                text: "Organisation"
+            Button:
+                text: "Settings"
+        BoxLayout:
+            Label:
+                text: "Main_Body"
+                size_hint:1,0.9
