@@ -1,4 +1,7 @@
 #:kivy 1.9.2
+#reference KivyTestMain.py
+#: import main KivyTestMain
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
 #ScreenManager define
 ScreenManager:
     id: screen_manager
@@ -90,6 +93,7 @@ ScreenManager:
 #Main_Screen
 <Kivy_Test_Main>:
     name:"Main_Screen"
+    myOrgList: hotel_list_view
 
     BoxLayout:
         orientation: "vertical"
@@ -107,6 +111,14 @@ ScreenManager:
             Button:
                 text: "Settings"
         BoxLayout:
+            orientation: "horizontal"
+            size_hint:1,0.5
+            ListView:
+                id: hotel_list_view
+                adapter:
+                    ListAdapter(data=[], cls=main.StudentListButton)
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint:1,0.4
             Label:
                 text: "Main_Body"
-                size_hint:1,0.9

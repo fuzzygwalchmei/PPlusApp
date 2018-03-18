@@ -13,7 +13,8 @@ import json
 
 current_organisation ="default value"
 
-
+class StudentListButton(ListItemButton):
+    pass
 
 #Code for Login_Screen
 class Kivy_Test_Login(Screen):
@@ -42,15 +43,7 @@ class Kivy_Test_Login(Screen):
         if response.status_code == 200:
             self.ids.BottomLabel.text = str(response_status)
             self.parent.current = "Main_Screen"
-            print(AuthToken)
-            print(response_content.keys())
-            print("userid: ",response_content["id"])
             myUserID = response_content["id"]
-            #myUserID = myAttributes["default_organisation"]["name"]
-            print("attributes: ",response_content["attributes"])
-            print("email: ",myAttributes["email"])
-            print("default Org ID: ",myAttributes["default_organisation"]["id"])
-            print("Current Org: ",myAttributes["default_organisation"]["name"])
             current_organisation = myAttributes["default_organisation"]["name"]
 
 
@@ -60,6 +53,7 @@ class Kivy_Test_Login(Screen):
 #Code for Main_Screen
 class Kivy_Test_Main(Screen):
     current_organisation = StringProperty("default")
+    myOrgList = ObjectProperty()
     global orgList
     orgList = {}
 
@@ -70,6 +64,7 @@ class Kivy_Test_Main(Screen):
         print(userDetails.keys())
         for each in userDetails.keys():
             print(userDetails[each])
+        self.Main_Body.text = userDetails
 
 
 
@@ -81,6 +76,9 @@ class Kivy_Test_Main(Screen):
             newkey = each["attributes"]["name"]
             newdata = each["id"]
             orgList[newkey] = newdata
+            self.myOrgList.adapter.data.extend([newkey])
+        self.myOrgList._trigger_reset_populate()
+
     pass
 
 
