@@ -90,15 +90,20 @@ ScreenManager:
 #Main_Screen
 <Kivy_Test_Main>:
     name:"Main_Screen"
+
     BoxLayout:
         orientation: "vertical"
         BoxLayout:
             orientation: "horizontal"
             size_hint:1,0.1
             Button:
+                id:"UserButton"
                 text: "User"
+                on_press: root.showUserDetails()
             Button:
-                text: "Organisation"
+                id:"OrgButton"
+                text: "My Org"
+                on_press: root.getOrgList()
             Button:
                 text: "Settings"
         BoxLayout:

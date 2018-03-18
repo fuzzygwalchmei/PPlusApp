@@ -11,45 +11,78 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 import requests
 import json
 
+current_organisation ="default value"
+
+
 
 #Code for Login_Screen
 class Kivy_Test_Login(Screen):
     userName_Input = ObjectProperty()
     passWord_Input = ObjectProperty()
-    response_status = StringProperty()
+
+
     def doLogin(self):
         doUserName = self.userName_Input.text
         doPassWord = self.passWord_Input.text
         parameters = {"email": doUserName, "password": doPassWord}
+        global myUserID
+        global AuthToken
+
 
         response = requests.post("http://staging.purchaseplus.com/access/api/auth/sign_in",parameters)
+        dataset = response.json()
+        print(dataset.keys())
+
         response_status=response.status_code
-        response_header = json.loads(response.headers.decode('utf-8'))
-        response_content = json.loads(response.content.decode('utf-8'))
+        AuthToken = {"access_token": response.headers["access-token"], "uid":response.headers["uid"], "client": response.headers["client"]}
+        response_content = dataset["data"]
+        myAttributes = response_content["attributes"]
+
 
         if response.status_code == 200:
             self.ids.BottomLabel.text = str(response_status)
             self.parent.current = "Main_Screen"
-            print(response_header)
-            print(response_content)
+            print(AuthToken)
+            print(response_content.keys())
+            print("userid: ",response_content["id"])
+            myUserID = response_content["id"]
+            #myUserID = myAttributes["default_organisation"]["name"]
+            print("attributes: ",response_content["attributes"])
+            print("email: ",myAttributes["email"])
+            print("default Org ID: ",myAttributes["default_organisation"]["id"])
+            print("Current Org: ",myAttributes["default_organisation"]["name"])
+            current_organisation = myAttributes["default_organisation"]["name"]
+
+
         else:
             self.ids.BottomLabel.text = "Your username or password was incorrect. Status: " + str(response_status)
 
 #Code for Main_Screen
 class Kivy_Test_Main(Screen):
+    current_organisation = StringProperty("default")
+    global orgList
+    orgList = {}
+
+    def showUserDetails(self):
+        response = requests.get("http://staging.purchaseplus.com/access/api/users/"+myUserID, headers=AuthToken)
+        responseJSON = response.json()
+        userDetails = responseJSON["data"]
+        print(userDetails.keys())
+        for each in userDetails.keys():
+            print(userDetails[each])
+
+
+
+    def getOrgList(self):
+        response = requests.get("http://staging.purchaseplus.com/access/api/users/"+myUserID+"/organisations", headers=AuthToken)
+        responseJSON = response.json()
+        orgDataset = responseJSON["data"]
+        for each in orgDataset:
+            newkey = each["attributes"]["name"]
+            newdata = each["id"]
+            orgList[newkey] = newdata
     pass
 
-
-'''
-class screen_manager(ScreenManager):
-    pass
-
-#setup screen_manager and add screens
-screen_manager = ScreenManager()
-screen_manager.add_widget(Kivy_Test_Login(name="Login_Screen"))
-screen_manager.add_widget(Kivy_Test_Main(name="Main_Screen"))
-screen_manager.current = "Login_Screen"
-'''
 
 #Build Main App
 class KivyTestApp(App):
