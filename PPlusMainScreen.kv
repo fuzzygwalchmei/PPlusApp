@@ -1,0 +1,41 @@
+#:kivy 1.9.2
+#reference KivyTestMain.py
+#: import main KivyTestMain
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
+#Main_Screen
+<PPlusMainScreen>:
+    name:"Main_Screen"
+    myOrgList: hotel_list_view
+
+    BoxLayout:
+        orientation: "vertical"
+        #BoxLayout for control buttons
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint:1,0.1
+            Button:
+                id:UserButton
+                text: "User"
+                on_press: root.showUserDetails()
+            Button:
+                id:OrgButton
+                text: "My Org"
+                on_press: root.getOrgList()
+            Button:
+                text: "Settings"
+        #BoxLayout for display lists
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint:1,0.5
+            ListView:
+                id: hotel_list_view
+                #on_press: root.orgClicked()
+                adapter:
+                    ListAdapter(data=[], cls=main.StudentListButton)
+
+        #BoxLayout for itemised display
+        BoxLayout:
+            Label:
+                id: MainBody
+                text: "Main Body Text"

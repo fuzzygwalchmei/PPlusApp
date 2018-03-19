@@ -1,0 +1,76 @@
+#:kivy 1.9.2
+#reference PPlusApp.py
+#: import main PPlusApp
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
+#Login_Screen
+<PPlusLoginScreen>:
+    name:"Login_Screen"
+    userName_Input: userName
+    passWord_Input: passWord
+
+    #Main Box Layout
+    BoxLayout:
+        orientation:"vertical"
+        padding: 10
+        spacing: 10
+        #BoxLayout for Logo
+        BoxLayout:
+
+            Label:
+                id: "TopLabel"
+                text: "Label"
+        #Boxlayout to define login and input
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint: 0.8,0.15
+            Label:
+                font_size: 15
+                text: ""
+            Label:
+                font_size: 15
+                text: "Username"
+            TextInput:
+                id: userName
+                width:120
+                font_size:15
+                multiline: False
+            Label:
+                font_size: 15
+                text: ""
+        #BoxLayout for password and input
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: 0.8,0.15
+            Label:
+                font_size: 15
+                text: ""
+            Label:
+                font_size: 15
+                text: "Password"
+            TextInput:
+                id: passWord
+                password: True
+                width: 80
+                font_size:15
+                multiline: False
+            Label:
+                font_size: 15
+                text: ""
+        #BoxLayout for Login Button
+        BoxLayout:
+            size_hint: 0.6,0.1
+            Label:
+                font_size: 15
+                text: ""
+            Button:
+                text: "Login"
+                on_press: root.doLogin()
+            Label:
+                font_size: 15
+                text: ""
+        #BoxLayout for Login Error Message
+        BoxLayout:
+            Label:
+                id: BottomLabel
+                text: "Please Log In"

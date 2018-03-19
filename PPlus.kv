@@ -1,0 +1,37 @@
+# ex10.kv
+
+<Ex10>:
+    cols: 3
+    AnchorLayout:
+        anchor_x: 'top'
+        anchor_y: 'center'
+        canvas:
+            Color:
+                rgb: [1,0,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        PPlusMainScreen:
+            size_hint: [None,None]
+            size: [app.x,app.y]
+    AnchorLayout:
+        anchor_x: 'bottom'
+        anchor_y: 'center'
+        canvas:
+            Color:
+                rgb: [0,1,0]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        PPlusLoginScreen:
+            size_hint: [None,None]
+            size: [app.x,app.y]
+    AnchorLayout:
+        anchor_x: 'right'
+        anchor_y: 'center'
+        canvas:
+            Color:
+                rgb: [0,0,1]
+            Rectangle:
+                pos: self.pos
+                size: self.size
