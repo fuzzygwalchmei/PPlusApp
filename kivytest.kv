@@ -22,19 +22,18 @@ ScreenManager:
     userName_Input: userName
     passWord_Input: passWord
 
-#Main Box Layout
+    #Main Box Layout
     BoxLayout:
         orientation:"vertical"
         padding: 10
         spacing: 10
-        height: 30
-#BoxLayout for Logo
+        #BoxLayout for Logo
         BoxLayout:
 
             Label:
                 id: "TopLabel"
                 text: "Label"
-#Boxlayout to define login and input
+        #Boxlayout to define login and input
         BoxLayout:
             orientation:"horizontal"
             size_hint: 0.8,0.15
@@ -52,7 +51,7 @@ ScreenManager:
             Label:
                 font_size: 15
                 text: ""
-#BoxLayout for password and input
+        #BoxLayout for password and input
         BoxLayout:
             orientation: "horizontal"
             size_hint: 0.8,0.15
@@ -71,7 +70,7 @@ ScreenManager:
             Label:
                 font_size: 15
                 text: ""
-#BoxLayout for Login Button
+        #BoxLayout for Login Button
         BoxLayout:
             size_hint: 0.6,0.1
             Label:
@@ -83,11 +82,11 @@ ScreenManager:
             Label:
                 font_size: 15
                 text: ""
-#BoxLayout for Login Error Message
+        #BoxLayout for Login Error Message
         BoxLayout:
             Label:
                 id: BottomLabel
-                text: "BottomLabel"
+                text: "Please Log In"
 
 
 #Main_Screen
@@ -97,28 +96,32 @@ ScreenManager:
 
     BoxLayout:
         orientation: "vertical"
+        #BoxLayout for control buttons
         BoxLayout:
             orientation: "horizontal"
             size_hint:1,0.1
             Button:
-                id:"UserButton"
+                id:UserButton
                 text: "User"
                 on_press: root.showUserDetails()
             Button:
-                id:"OrgButton"
+                id:OrgButton
                 text: "My Org"
                 on_press: root.getOrgList()
             Button:
                 text: "Settings"
+        #BoxLayout for display lists
         BoxLayout:
             orientation: "horizontal"
             size_hint:1,0.5
             ListView:
                 id: hotel_list_view
+                #on_press: root.orgClicked()
                 adapter:
                     ListAdapter(data=[], cls=main.StudentListButton)
+
+        #BoxLayout for itemised display
         BoxLayout:
-            orientation: "horizontal"
-            size_hint:1,0.4
             Label:
-                text: "Main_Body"
+                id: MainBody
+                text: "Main Body Text"
