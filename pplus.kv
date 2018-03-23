@@ -1,0 +1,129 @@
+#:kivy 1.9.2
+#reference PPlusCore.py
+#: import main PPlusCore
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+#ScreenManager define
+ScreenManager:
+    id: screen_manager
+    #Login Screen Details
+    PPlusLoginScreen:
+        id: Login_Screen
+        name: 'Login'
+        manager: 'screen_manager'
+    #Main Screen Details
+    PPlusMainScreen:
+        id: Main_Screen
+        name: 'Main'
+        manager: 'screen_manager'
+
+#Login_Screen
+<PPlusLoginScreen>:
+    name:"Login_Screen"
+    userName_Input: userName
+    passWord_Input: passWord
+
+    #Main Box Layout
+    BoxLayout:
+        orientation:"vertical"
+        padding: 10
+        spacing: 10
+        #BoxLayout for Logo
+        BoxLayout:
+
+            Label:
+                id: "TopLabel"
+                text: "Label"
+        #Boxlayout to define login and input
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint: 0.8,0.15
+            Label:
+                font_size: 15
+                text: ""
+            Label:
+                font_size: 15
+                text: "Username"
+            TextInput:
+                id: userName
+                width:120
+                font_size:15
+                multiline: False
+            Label:
+                font_size: 15
+                text: ""
+        #BoxLayout for password and input
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: 0.8,0.15
+            Label:
+                font_size: 15
+                text: ""
+            Label:
+                font_size: 15
+                text: "Password"
+            TextInput:
+                id: passWord
+                password: True
+                width: 80
+                font_size:15
+                multiline: False
+            Label:
+                font_size: 15
+                text: ""
+        #BoxLayout for Login Button
+        BoxLayout:
+            size_hint: 0.6,0.1
+            Label:
+                font_size: 15
+                text: ""
+            Button:
+                text: "Login"
+                on_press: root.doLogin()
+            Label:
+                font_size: 15
+                text: ""
+        #BoxLayout for Login Error Message
+        BoxLayout:
+            Label:
+                id: BottomLabel
+                text: "Please Log In"
+
+
+#Main_Screen
+<PPlusMainScreen>:
+    name:"Main_Screen"
+    myOrgList: hotel_list_view
+
+    BoxLayout:
+        orientation: "vertical"
+        #BoxLayout for control buttons
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint:1,0.1
+            Button:
+                id:UserButton
+                text: "User"
+                on_press: root.showUserDetails()
+            Spinner:
+                id:OrgButton
+                text: "My Org"
+                values: ("replace me")
+                on_press: root.getOrgList()
+                on_text: root.orgClicked()
+            Button:
+                text: "Settings"
+        #BoxLayout for display lists
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint:1,0.5
+            ListView:
+                id: hotel_list_view
+                #on_press: root.orgClicked()
+                adapter:
+                    ListAdapter(data=[], cls=main.StudentListButton)
+
+        #BoxLayout for itemised display
+        BoxLayout:
+            Label:
+                id: MainBody
+                text: "Main Body Text"

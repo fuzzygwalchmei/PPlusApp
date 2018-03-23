@@ -1,0 +1,1 @@
+{"jsonapi": {"version": "1.0"}, "data": {"type": "catalogues", "attributes": {"title": "Fruit"}, "id": "2150", "relationships": {"priced_catalogued_products": {"links": {"self": "/supply/api/catalogues/2150/priced_catalogued_products"}}}}}
