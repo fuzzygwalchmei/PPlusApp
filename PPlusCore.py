@@ -12,6 +12,22 @@ from kivy.uix.spinner import Spinner
 import requests
 import json
 
+class MyGlobals(object):
+    """docstring for MyGlobals."""
+    def __init__(self):
+        super(MyGlobals, self).__init__()
+        self.myUserID = [] #[id, name, email]
+        self.current_organisation = [] #[id, name]
+        self.AuthToken = {} #{client, uid, access_token}
+        self.orgList = {} #{ID: {id, name}}
+        self.myAttributes = {} #{id, default org{}, type, email}
+
+    def getOrgKey(self, search_value):
+        for key in PPlusGlobals.orgList:
+            if PPlusGlobals.orgList[key]["name"] == search_value:
+                return key
+
+
 
 class StudentListButton(ListItemButton):
     pass
@@ -27,10 +43,6 @@ class PPlusLoginScreen(Screen):
         doPassWord = self.passWord_Input.text
 
         parameters = {"email": doUserName, "password": doPassWord}
-        global myUserID
-        global AuthToken
-        global myAttributes
-        global Gcurrent_organisation
 
 
         #MB API Login
@@ -42,13 +54,13 @@ class PPlusLoginScreen(Screen):
         if response.status_code == 200:
             self.parent.current = "Main_Screen"
             response_content = dataset["data"]
-            myAttributes = response_content["attributes"]
-            myUserID = response_content["id"]
-            Gcurrent_organisation = myAttributes["default_organisation"]["name"]
+            PPlusGlobals.myAttributes = response_content["attributes"]
+            PPlusGlobals.myUserID = response_content["id"]
+            PPlusGlobals.current_organisation = [PPlusGlobals.myAttributes["default_organisation"]["id"],PPlusGlobals.myAttributes["default_organisation"]["name"]]
             self.parent.get_screen("Main_Screen").ids.UserButton.text=response.headers["uid"]
-            self.parent.get_screen("Main_Screen").ids.OrgButton.text=Gcurrent_organisation
-            AuthToken = {"access_token": response.headers["access-token"], "uid":response.headers["uid"], "client": response.headers["client"]}
-            print(Gcurrent_organisation)
+            self.parent.get_screen("Main_Screen").ids.OrgButton.text=PPlusGlobals.current_organisation[1]
+            PPlusGlobals.AuthToken = {"access_token": response.headers["access-token"], "uid":response.headers["uid"], "client": response.headers["client"]}
+            print(PPlusGlobals.current_organisation)
         #post status error if failed
         else:
             self.ids.BottomLabel.text = "Your username or password was incorrect. Status: " + str(response_status)
@@ -57,13 +69,10 @@ class PPlusLoginScreen(Screen):
 class PPlusMainScreen(Screen):
     #current_organisation = StringProperty("default")
     myOrgList = ObjectProperty()
-    global orgList
-    orgList = {}
-    myOrgList=("replace me")
 
     def getDataList(self, url):
         baseURL = "http://staging.purchaseplus.com"
-        response = requests.get(baseURL+url, headers=AuthToken)
+        response = requests.get(baseURL+url, headers=PPlusGlobals.AuthToken)
         responseJSON = response.json()
         with open('result.json', 'w') as fp:
             json.dump(responseJSON, fp)
@@ -73,50 +82,41 @@ class PPlusMainScreen(Screen):
 
     #Display User information
     def showUserDetails(self):
-        functionURL="/access/api/users/"+myUserID
+        functionURL="/access/api/users/"+PPlusGlobals.myUserID
         userDetails = self.getDataList(functionURL)
-        self.ids.MainBody.text = "My UID: "+str(myUserID)+"\n"+"My Email: "+myAttributes["email"]
+        self.ids.MainBody.text = "My UID: "+str(PPlusGlobals.myUserID)+"\n"+"My Email: "+PPlusGlobals.myAttributes["email"]
 
 
     #Display a list of Orgs
     def getOrgList(self):
-        OrgList = {}
         myTempOrgList =[]
-        functionURL="/access/api/users/"+myUserID+"/organisations"
+        functionURL="/access/api/users/"+PPlusGlobals.myUserID+"/organisations"
         orgDataset = self.getDataList(functionURL)
         for orgItem in orgDataset:
             newkey = orgItem["id"]
             newdata = orgItem["attributes"]["name"]
-            orgList[newkey] = newdata
+            PPlusGlobals.orgList[newkey] = {"id": newkey, "name": newdata}
             myTempOrgList.append(newdata)
             #self.myOrgList.adapter.data.extend([newkey])
         #self.myOrgList._trigger_reset_populate()
         myOrgList = tuple(myTempOrgList)
         self.ids.OrgButton.values = myOrgList
-        self.ids.MainBody.text = "clicked"
-
-
+        self.ids.MainBody.text = PPlusGlobals.current_organisation[1]
 
 
     def orgClicked(self):
-        global Gcurrent_organisation
         dataset = ""
-
-        if orgList:
-            #orgIDTemp = orgList.keys(orgList[self.ids.OrgButton.text])
-            functionURL = "/access/api/organisations/"+orgIDTemp
-            print(functionURL)
+        if PPlusGlobals.orgList:
+            orgIDTemp = PPlusGlobals.current_organisation[0]
+            functionURL = "/access/api/organisations/"+str(orgIDTemp)
             orgDetails = self.getDataList(functionURL)
-            print(Gcurrent_organisation)
-            Gcurrent_organisation = orgList[self.ids.OrgButton.text]
-            print(orgList[Gcurrent_organisation])
-            '''
-            for each in orgDetails:
-                dataset = each + orgList[each]+"\n"
-                print(each)
-            newText = dataset
-            self.ids.MainBody.text = newText
-            '''
+            print("current Org: ", PPlusGlobals.current_organisation)
+            search_value = self.ids.OrgButton.text
+            print("Search Value: ", search_value)
+            NewOrgID = PPlusGlobals.getOrgKey(search_value)
+            PPlusGlobals.current_organisation[0] = NewOrgID
+            PPlusGlobals.current_organisation[1] = PPlusGlobals.orgList[NewOrgID]["name"]
+            print("new current org: ", PPlusGlobals.current_organisation[0]," ", PPlusGlobals.current_organisation[1])
 
 
 
@@ -129,8 +129,9 @@ class PPlusApp(App):
         screen_manager.add_widget(PPlusMainScreen(name="Main_Screen"))
         screen_manager.current = "Login_Screen"
 
+
         return screen_manager
 
-
+PPlusGlobals = MyGlobals()
 if __name__ == '__main__':
     PPlusApp().run()
